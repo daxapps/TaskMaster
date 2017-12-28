@@ -21,7 +21,7 @@ function loadEventListeners() {
 
 // add task
 function addTask(e) {
-  if(taskInput.value === '') {
+  if (taskInput.value === '') {
     alert('Add a task');
   }
 
@@ -38,24 +38,40 @@ function addTask(e) {
   li.appendChild(link);
   // append li to ul
   taskList.appendChild(li);
+  // store in localStorage
+  storeTaskInLocalStorage(taskInput.value);
   // clear input
   taskInput.value = '';
 
   e.preventDefault();
 }
 
+// store task
+function storeTaskInLocalStorage(task) {
+  let tasks;
+  if(localStorage.getItem('tasks') === null) {
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem('tasks'));
+  }
+
+  tasks.push(task);
+
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
 // remove task
 function removeTask(e) {
-  if(e.target.parentElement.classList.contains('delete-item')) {
-    if(confirm('Are You Sure?')){
-      e.target.parentElement.parentElement.remove();      
+  if (e.target.parentElement.classList.contains('delete-item')) {
+    if (confirm('Are You Sure?')) {
+      e.target.parentElement.parentElement.remove();
     }
   }
 }
 
 // clear tasks
 function clearTasks(e) {
-  while(taskList.firstChild) {
+  while (taskList.firstChild) {
     taskList.removeChild(taskList.firstChild);
   }
 }
@@ -64,9 +80,9 @@ function clearTasks(e) {
 function filterTasks(e) {
   const text = e.target.value.toLowerCase();
 
-  document.querySelectorAll('.collection-item').forEach(function(task) {
+  document.querySelectorAll('.collection-item').forEach(function (task) {
     const item = task.firstChild.textContent;
-    if(item.toLowerCase().indexOf(text) !== -1) {
+    if (item.toLowerCase().indexOf(text) !== -1) {
       task.style.display = 'block';
     } else {
       task.style.display = 'none';
